@@ -63,12 +63,11 @@
 <?php $nav = DB::getNav();
 foreach($nav as $k=>$val):?>
 	<?php if($val['status_name'] === 'enable'): ?>
-      <a class="p-2 text-muted" href="?id=<?= $val['id']; ?>"><?= $val['nav_name']; ?></a>
+      <a class="p-2 text-muted" href="index.php?id=<?= $val['id']; ?>"><?= $val['nav_name']; ?></a>
   <?php endif; ?>
 <?php endforeach; ?>
     </nav>
   </div>
-
   <div class="jumbotron p-4 p-md-5 text-white rounded bg-dark">
     <div class="col-md-6 px-0">
     	<?php $lastPost = DB::lastInsertPost(); ?>
@@ -96,59 +95,27 @@ foreach($nav as $k=>$val):?>
   </div>
 </div>
 
-<?php if($_SERVER['REQUEST_URI'] == '/myblog/' || $_SERVER['REQUEST_URI'] == '/myblog' || $_SERVER['REQUEST_URI'] == '/myblog//' || $_SERVER['REQUEST_URI'] == '/myblog/index.php'): ?>
 
-<?php $allPosts = DB::getAllPosts(); ?>
+<?php $post = DB::getSinglePost(); ?>
 <main role="main" class="container">
   <div class="row">
     <div class="col-md-8 blog-main">
       <h3 class="pb-4 mb-4 font-italic border-bottom">
         From the Firehose
       </h3>
-<?php foreach($allPosts as $posts): ?>
+      <?php if(!empty($post)): ?>
+<?php foreach($post as $mypost): ?>
       <div class="blog-post">
-      	<?php if($posts['status_name'] === 'enable'): ?>
-        <h2 class="blog-post-title"><?= $posts['name']; ?></h2>
-        <p class="blog-post-meta"><?php $data = explode(' ', $posts['created_at']); $date = array_shift($data); $timestamp = explode('-', $date); $year = array_shift($timestamp); $month = array_shift($timestamp); $day = array_shift($timestamp); echo ' Month '.$month.' Day '.$day;?></p>
+      	<?php if($mypost['status_name'] === 'enable'): ?>
+        <h2 class="blog-post-title"><?= $mypost['name']; ?></h2>
+        <p class="blog-post-meta"><?php $data = explode(' ', $mypost['created_at']); $date = array_shift($data); $timestamp = explode('-', $date); $year = array_shift($timestamp); $month = array_shift($timestamp); $day = array_shift($timestamp); echo ' Month '.$month.' Day '.$day;?></p>
 
-        <p><?= mb_strimwidth($posts['text'], 0, 500, '...');?> <a href="single_post.php?id=<?= $posts['id'];?>">read more...</a></p>
+        <p><?= $mypost['text'];?> </p>
     <?php endif; ?>
       </div><!-- /.blog-post -->
 <?php endforeach; ?>
-
 <?php else: ?>
-	<?php $allPosts = DB::getByCategory(); ?>
-	<?php if($allPosts != null): ?>
-	<main role="main" class="container">
-	  <div class="row">
-	    <div class="col-md-8 blog-main">
-	      <h3 class="pb-4 mb-4 font-italic border-bottom">
-	        From the Firehose
-	      </h3>
-	<?php foreach($allPosts as $posts): ?>
-	      <div class="blog-post">
-	      	<?php if($posts['status_name'] === 'enable'): ?>
-	        <h2 class="blog-post-title"><?= $posts['name']; ?></h2>
-	        <p class="blog-post-meta"><?php $data = explode(' ', $posts['created_at']); $date = array_shift($data); $timestamp = explode('-', $date); $year = array_shift($timestamp); $month = array_shift($timestamp); $day = array_shift($timestamp); echo ' Month '.$month.' Day '.$day;?></p>
-
-	        <p><?= mb_strimwidth($posts['text'], 0, 500, '...');?> <a href="single_post.php?id=<?= $posts['id'];?>">read more...</a></p>
-	    <?php endif; ?>
-	      </div><!-- /.blog-post -->
-	<?php endforeach; ?>
-	<?php else: ?>
-		<main role="main" class="container">
-		  <div class="row">
-		    <div class="col-md-8 blog-main">
-		      <h3 class="pb-4 mb-4 font-italic border-bottom">
-		        From the Firehose
-		      </h3>
-		      <div class="blog-post">
-		        <h2 class="blog-post-title"></h2>
-		        <p class="blog-post-meta"></p>
-
-		        <p>Post not exists</p>
-		      </div><!-- /.blog-post -->
-<?php endif; ?>
+<h2>Post not exists</h2>
 <?php endif; ?>
 
       <nav class="blog-pagination">

@@ -38,4 +38,28 @@ class DB
 		$stmt = self::connect()->query('SELECT text FROM about');
 		return $stmt->fetch();
 	}
+
+	public static function getSinglePost()
+	{
+		if(isset($_GET['id']))
+		{
+			$id = $_GET['id'];
+		}
+
+		$stmt = self::connect()->prepare('SELECT p.id, p.name, p.description, p.text, p.created_at, n.nav_name, s.status_name FROM posts p INNER JOIN navigates n ON p.category_id = n.id LEFT JOIN status s ON p.status_id = s.id WHERE p.id = :id ORDER BY p.created_at DESC');
+		$stmt->execute([':id' => $id]);
+		return $stmt->fetchAll();
+	}
+
+	public static function getByCategory()
+	{
+		if(isset($_GET['id']))
+		{
+			$id = $_GET['id'];
+		}
+
+		$stmt = self::connect()->prepare('SELECT p.id, p.name, p.description, p.text, p.created_at, n.id, n.nav_name, s.status_name FROM posts p INNER JOIN navigates n ON p.category_id = n.id LEFT JOIN status s ON p.status_id = s.id WHERE n.id = :id ORDER BY p.created_at DESC');
+		$stmt->execute([':id' => $id]);
+		return $stmt->fetchAll();
+	} 
 }
