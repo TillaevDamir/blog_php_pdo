@@ -33,8 +33,6 @@
     </style>
     <!-- Custom styles for this template -->
     <link href="https://fonts.googleapis.com/css?family=Playfair+Display:700,900" rel="stylesheet">
-    <!-- Custom styles for this template -->
-    <link href="blog.css" rel="stylesheet">
 
   </head>
 
@@ -53,7 +51,7 @@
         <a class="text-muted" href="#" aria-label="Search">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
         </a>
-        <a class="btn btn-sm btn-outline-secondary" href="#">Sign up</a>
+        <a class="btn btn-sm btn-outline-secondary" href="register.php">Sign up</a>
       </div>
     </div>
   </header>
@@ -63,7 +61,7 @@
 <?php $nav = DB::getNav();
 foreach($nav as $k=>$val):?>
 	<?php if($val['status_name'] === 'enable'): ?>
-      <a class="p-2 text-muted" href="index.php?id=<?= $val['id']; ?>"><?= $val['nav_name']; ?></a>
+      <a class="p-2 text-muted" href="index.php?cat_id=<?= $val['id']; ?>"><?= $val['nav_name']; ?></a>
   <?php endif; ?>
 <?php endforeach; ?>
     </nav>
@@ -114,14 +112,30 @@ foreach($nav as $k=>$val):?>
     <?php endif; ?>
       </div><!-- /.blog-post -->
 <?php endforeach; ?>
-<?php else: ?>
-<h2>Post not exists</h2>
-<?php endif; ?>
 
-      <nav class="blog-pagination">
-        <a class="btn btn-outline-primary" href="#">Older</a>
-        <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-      </nav>
+
+      <div class="col-md-12 mt-5 text-center">
+        <form method="POST">
+          <input type="hidden" name="post_id" value="<?= $post[0]['id']; ?>">
+          <input type="hidden" name="user_id" value="user_id">
+          <input type="text" name="comment" value="<?= isset($_POST['comment']) ? $_POST['comment'] : ''; ?>" placeholder="Оставить комментарий" class="form-control form-control-lg">
+          <input type="submit" name="save" value="Отправить" class="btn btn-info mt-3 col-md-12">
+        </form>
+      </div>
+      <?php else: ?>
+      <h2>Post not exists</h2>
+
+<?php endif; ?>
+      <div class="col-md-12 mt-3 text-secondary">
+        <div class="col-md-4 pt-3">
+          <p class="card-title">User Name</p>        
+        </div>
+        <div class="col-md-12">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi </p>
+        </div>
+      </div>
 
     </div><!-- /.blog-main -->
 <?php $about = DB::getAboutInfo(); ?>

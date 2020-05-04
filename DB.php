@@ -1,7 +1,11 @@
 <?php 
 
+require 'config/config.php';
+
 class DB
 {
+	public static $error = [];
+
 	private function connect()
 	{
 		$config = require 'config/db.php';
@@ -53,13 +57,49 @@ class DB
 
 	public static function getByCategory()
 	{
-		if(isset($_GET['id']))
+		if(isset($_GET['cat_id']))
 		{
-			$id = $_GET['id'];
+			$id = $_GET['cat_id'];
 		}
 
 		$stmt = self::connect()->prepare('SELECT p.id, p.name, p.description, p.text, p.created_at, n.id, n.nav_name, s.status_name FROM posts p INNER JOIN navigates n ON p.category_id = n.id LEFT JOIN status s ON p.status_id = s.id WHERE n.id = :id ORDER BY p.created_at DESC');
 		$stmt->execute([':id' => $id]);
 		return $stmt->fetchAll();
 	} 
+
+	private function commenting()
+	{
+		if(isset($_POST['user_id']) && $_POST['user_id'] != '' && !empty($_POST['comment']) && $_POST['comment'] != '')
+		{
+			$user_id = $_POST['user_id'];
+			$post_id = $_POST['post_id'];
+			$comment = htmlspecialchars(trim($_POST['comment']));
+
+			$stmt = self::connect()->prepare('INSERT INTO comments(user_id, comment, post_id) VALUES (:user_id, ":comment", :post_id');
+			$stmt->bindValue([':user_id'=>$user_id]);
+			$stmt->bindValue([':comment'=>$comment]);
+			$stmt->bindValue([':post_id'=>$post_id]);
+			$stmt->execute();
+		}
+	}
+
+	public static function newUser(array $data)
+	{
+
+		$stmt = self::connect()->prepare('INSERT INTO users(user_name, email, password) VALUES(:user_name, :email, :password)');
+		$stmt->bindValue([':user_name'=>$data['userName']]);
+		$stmt->bindValue([':email'=>$data['email']]);
+		$stmt->bindValue([':password'=>$data['password']]);
+		
+		if($stmt->execute())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+
 }
