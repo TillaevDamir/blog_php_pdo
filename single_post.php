@@ -51,7 +51,11 @@
         <a class="text-muted" href="#" aria-label="Search">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
         </a>
-        <a class="btn btn-sm btn-outline-secondary" href="register.php">Sign up</a>
+        <?php if(!empty($_SESSION['status'])):?>
+        <a class="btn btn-sm btn-outline-secondary" href="logout.php">Выйти</a>
+        <?php else: ?>
+        <a class="btn btn-sm btn-outline-secondary" href="register.php">Войти</a>
+        <?php endif; ?>
       </div>
     </div>
   </header>
@@ -113,27 +117,53 @@ foreach($nav as $k=>$val):?>
       </div><!-- /.blog-post -->
 <?php endforeach; ?>
 
-
+<?php if(!empty($_SESSION['status'])): ?>
       <div class="col-md-12 mt-5 text-center">
         <form method="POST">
-          <input type="hidden" name="post_id" value="<?= $post[0]['id']; ?>">
-          <input type="hidden" name="user_id" value="user_id">
-          <input type="text" name="comment" value="<?= isset($_POST['comment']) ? $_POST['comment'] : ''; ?>" placeholder="Оставить комментарий" class="form-control form-control-lg">
-          <input type="submit" name="save" value="Отправить" class="btn btn-info mt-3 col-md-12">
+          <div class="form-row align-items-center">
+            <div class="col-md-10">
+              <label class="sr-only" for="inlineFormInputGroup">Имя пользователя</label>
+              <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><?= !empty($_SESSION['status']) ? $_SESSION['status']['name'] : 'Comment'; ?></div>
+                </div>
+                <input type="hidden" name="post_id" value="<?= $post[0]['id']; ?>">
+                <input type="hidden" name="user_id" value="<?= !empty($_SESSION['status']) ? $_SESSION['status']['id'] : ''; ?>">
+                <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Комментарий">
+              </div>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary mb-2">Отправить</button>
+            </div>
+          </div>
         </form>
       </div>
+<?php endif; ?>
       <?php else: ?>
       <h2>Post not exists</h2>
-
 <?php endif; ?>
-      <div class="col-md-12 mt-3 text-secondary">
+      <div class="col-md-12 mt-3 text-secondary" id="comments">
         <div class="col-md-4 pt-3">
-          <p class="card-title">User Name</p>        
+          <p class="card-title">User Name</p>    
         </div>
         <div class="col-md-12">
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
           tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
           quis nostrud exercitation ullamco laboris nisi </p>
+        </div>
+        <div class="col-md-12">
+          <p class="text-right">2020.05.12 15:12</p>
+        </div>
+        <div class="col-md-4 pt-3">
+          <p class="card-title">User Name</p>    
+        </div>
+        <div class="col-md-12">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+          quis nostrud exercitation ullamco laboris nisi </p>
+        </div>
+        <div class="col-md-12">
+          <p class="text-right">2020.05.12 15:12</p>
         </div>
       </div>
 

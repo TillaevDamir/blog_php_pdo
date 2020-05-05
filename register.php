@@ -1,4 +1,4 @@
-<?php require 'Auth.php'; ?>
+<?php include 'Auth.php'; ?>
 <!doctype html>
 <html lang="ru">
   <head>
@@ -80,18 +80,19 @@
   <body class="text-center">
     <div class="container">
       <div class="row">
-        <form class="form-signin text-center" method="POST" action="Auth.php">
-          <h1 class="h3 mb-3 font-weight-normal">Зарегистрироваться</h1>
-          <?php debug($errors);?>
-          <label for="inputEmail" class="sr-only">Введите свое имя</label>
-          <input type="text" name="user_name" id="inputEmail" class="form-control text-center" placeholder="User Name" required autofocus>
+        <form class="form-signin text-center" method="POST">
+          <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
+          <?php echo getErrors($errors);?>
+          <label for="inputName" class="sr-only">Введите свое имя</label>
+          <input type="text" name="user_name" id="inputName" class="form-control text-center" placeholder="User Name" value="<?= isset($_POST['user_name']) ? $_POST['user_name'] : '';?>" required autofocus>
           <label for="inputEmail" class="sr-only">Введите ваш электронный адрес</label>
-          <input type="email" name="email" id="inputEmail" class="form-control text-center" placeholder="Email address" required autofocus>
+          <input type="email" name="email" id="inputEmail" class="form-control text-center" placeholder="Email address" value="<?= isset($_POST['email']) ? $_POST['email'] : '';?>" required autofocus>
           <label for="inputPassword" class="sr-only">Пароль</label>
           <input type="password" name="password" id="inputPassword" class="form-control text-center" placeholder="Password" required>
-          <label for="inputPassword" class="sr-only">Повторите ваш пароль</label>
-          <input type="password" name="password2" id="inputPassword" class="form-control text-center" placeholder="Password" required>
-          <button class="btn btn-lg btn-primary btn-block" name="signup" value="signup" type="submit">Войти</button>
+          <label for="inputPassword2" class="sr-only">Повторите ваш пароль</label>
+          <input type="password" name="password2" id="inputPassword2" class="form-control text-center" placeholder="Password" required>
+          <button class="btn btn-lg btn-primary btn-block mb-3" name="signup" type="submit">Зарегистрироваться</button>
+          <p><a href="login.php">Войти</a></p>
         </form>
       </div>
     </div>

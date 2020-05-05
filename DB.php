@@ -83,13 +83,20 @@ class DB
 		}
 	}
 
+	public static function getEmail($email)
+	{
+		$stmt = self::connect()->prepare('SELECT * FROM users WHERE email = :email');
+		$stmt->execute([':email'=>$email]);
+		return $stmt->fetch();
+	}
+
 	public static function newUser(array $data)
 	{
 
 		$stmt = self::connect()->prepare('INSERT INTO users(user_name, email, password) VALUES(:user_name, :email, :password)');
-		$stmt->bindValue([':user_name'=>$data['userName']]);
-		$stmt->bindValue([':email'=>$data['email']]);
-		$stmt->bindValue([':password'=>$data['password']]);
+		$stmt->bindValue(':user_name', $data['userName']);
+		$stmt->bindValue(':email', $data['email']);
+		$stmt->bindValue(':password', $data['password']);
 		
 		if($stmt->execute())
 		{

@@ -1,7 +1,5 @@
 <?php require_once 'DB.php'; ?>
 <!DOCTYPE html>
-
-<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="utf-8">
@@ -10,10 +8,8 @@
 
     <title>Блог | Blog Template for Bootstrap</title>
 
-
     <!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
 
     <style>
       .bd-placeholder-img {
@@ -51,11 +47,14 @@
         <a class="text-muted" href="#" aria-label="Search">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24" focusable="false"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
         </a>
-        <a class="btn btn-sm btn-outline-secondary" href="register.php">Sign up</a>
+        <?php if(!empty($_SESSION['status'])):?>
+        <a class="btn btn-sm btn-outline-secondary" href="logout.php">Выйти</a>
+        <?php else: ?>
+        <a class="btn btn-sm btn-outline-secondary" href="register.php">Войти</a>
+        <?php endif; ?>
       </div>
     </div>
   </header>
-
   <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
 <?php $nav = DB::getNav();
