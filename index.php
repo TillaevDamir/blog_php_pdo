@@ -150,6 +150,7 @@ foreach($nav as $k=>$val):?>
 <?php endif; ?>
 
       <nav class="blog-pagination">
+        <?php DB::pagination(); ?>
         <a class="btn btn-outline-primary" href="#">Older</a>
         <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
       </nav>

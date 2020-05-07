@@ -131,4 +131,49 @@ class DB
 		return $stmt->fetchAll();
 	}
 
+	protected function getCountPosts()
+	{
+		$stmt = self::connect()->query('SELECT COUNT(*) FROM posts');
+		return $stmt->fetchColumn();
+	}
+
+	public static function pagination()
+	{
+		$limit = 2;
+		$total = self::getCountPosts();
+		$pages = ceil($total/$limit);
+
+		$page = min($pages, filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT, array(
+				'options'=>array(
+					'default'=>1,
+					'min_range'=>1,
+				),
+			)));
+		$offset = $page * $limit;
+		$start = $offset + 1;
+		$end = min(($offset + $limit), $total);
+		$prevLink = ($page > 1) ? '<a href="?page=1" title="First page">&laquo;</a> <a href="?page='.($page - 1).'" title="Previous page">&lsaquo;</a>' : '<span class="disabled">&lsaquo;</span>';
+		$nextLink = ($page < $pages) ? '<a href="?page='.($page + 1).'" title="Next page">&rsaquo;</a> <a href="'.$pages.'" title="Last page">&raquo;</a>' : '<span class="disabled">&rsaquo;</span> <span class="disabled">&raquo;</span>';
+		echo '<div id="paging"><p>', $prevLink, ' Page ', $page, ' of ', $pages, ' pages, displaying '. $start. '-'. $end. ' of '. $total. ' results '. $nextLink. ' </p></div>';
+		$stmt = self::connect()->prepare('SELECT * FROM posts ORDER BY LIMIT ? OFFSET ?');
+		$stmt->bindParam(1, $limit, PDO::PARAM_INT);
+		$stmt->bindParam(2, $offset, PDO::PARAM_INT);
+		$stmt->execute();
+
+		if($stmt->rowCount() > 0)
+		{
+			$iterator = new IteratorIterator($stmt);
+
+			foreach($iterator as $row)
+			{
+				echo '<p>'.$row['name'].'</p>';
+			}
+		}
+		else
+		{
+			echo '<p>No results could be displayed</p>';
+		}
+
+	}
+
 }
