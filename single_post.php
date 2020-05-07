@@ -1,4 +1,7 @@
 <?php require_once 'DB.php'; ?>
+<?php require_once 'functions.php'; ?>
+<?php 
+ ?>
 <!DOCTYPE html>
 
 <!doctype html>
@@ -10,10 +13,8 @@
 
     <title>Блог | Blog Template for Bootstrap</title>
 
-
     <!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
 
     <style>
       .bd-placeholder-img {
@@ -54,7 +55,8 @@
         <?php if(!empty($_SESSION['status'])):?>
         <a class="btn btn-sm btn-outline-secondary" href="logout.php">Выйти</a>
         <?php else: ?>
-        <a class="btn btn-sm btn-outline-secondary" href="register.php">Войти</a>
+        <a class="btn btn-sm btn-outline-secondary mr-1" href="login.php">Вход</a>
+        <a class="btn btn-sm btn-outline-secondary" href="register.php">Регистрация</a>
         <?php endif; ?>
       </div>
     </div>
@@ -105,7 +107,7 @@ foreach($nav as $k=>$val):?>
       <h3 class="pb-4 mb-4 font-italic border-bottom">
         From the Firehose
       </h3>
-      <?php if(!empty($post)): ?>
+<?php if(!empty($post)): ?>
 <?php foreach($post as $mypost): ?>
       <div class="blog-post">
       	<?php if($mypost['status_name'] === 'enable'): ?>
@@ -116,9 +118,27 @@ foreach($nav as $k=>$val):?>
     <?php endif; ?>
       </div><!-- /.blog-post -->
 <?php endforeach; ?>
-
-<?php if(!empty($_SESSION['status'])): ?>
-      <div class="col-md-12 mt-5 text-center">
+<?php if(empty($_SESSION['status'])): ?>
+<div class="col-md-12 mt-5 text-center">
+ Авторизуйтесь чтобы оставить комментарий <a href="login.php"> Войти</a>
+</div>
+<?php else: ?>
+      <?php if(!empty($_SESSION['error'])): ?>
+        <div class="col-md-12 bg-danger text-center">
+          <h4><?= $_SESSION['error']; $_SESSION['error'] = null; ?></h4>
+        </div>
+      <?php endif; ?>
+      <?php if(!empty($_SESSION['success'])): ?>
+        <div class="col-md-12 bg-success text-center">
+          <h4><?= $_SESSION['success']; $_SESSION['success'] = null; ?></h4>
+        </div>
+      <?php endif ?>
+      <?php if(!empty($_SESSION['msg'])): ?>
+        <div class="col-md-12 bg-info text-center">
+          <h4><?= $_SESSION['msg']; $_SESSION['msg'] = null; ?></h4>
+        </div>
+      <?php endif ?>
+      <div class="col-md-12 text-center">
         <form method="POST">
           <div class="form-row align-items-center">
             <div class="col-md-10">
@@ -129,45 +149,41 @@ foreach($nav as $k=>$val):?>
                 </div>
                 <input type="hidden" name="post_id" value="<?= $post[0]['id']; ?>">
                 <input type="hidden" name="user_id" value="<?= !empty($_SESSION['status']) ? $_SESSION['status']['id'] : ''; ?>">
-                <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Комментарий">
+                <input type="text" class="form-control" name="comment" id="inlineFormInputGroup" placeholder="Комментарий">
               </div>
             </div>
             <div class="col-auto">
-              <button type="submit" class="btn btn-primary mb-2">Отправить</button>
+              <button type="submit" name="save_comment" class="btn btn-primary mb-2">Отправить</button>
             </div>
           </div>
         </form>
       </div>
 <?php endif; ?>
-      <?php else: ?>
-      <h2>Post not exists</h2>
-<?php endif; ?>
+
+
+<?php $comments = DB::getComments($post[0]['id']); if(!empty($comments) && $comments[0]['status_id'] != 2): foreach($comments as $comment):?>
       <div class="col-md-12 mt-3 text-secondary" id="comments">
         <div class="col-md-4 pt-3">
-          <p class="card-title">User Name</p>    
+          <p class="card-title"><?= $comment['user_name']; ?></p>    
         </div>
         <div class="col-md-12">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi </p>
+          <p><?= $comment['comment']; ?></p>
         </div>
         <div class="col-md-12">
-          <p class="text-right">2020.05.12 15:12</p>
-        </div>
-        <div class="col-md-4 pt-3">
-          <p class="card-title">User Name</p>    
-        </div>
-        <div class="col-md-12">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-          quis nostrud exercitation ullamco laboris nisi </p>
-        </div>
-        <div class="col-md-12">
-          <p class="text-right">2020.05.12 15:12</p>
+          <p class="text-right"><?= $comment['updated_at']; ?></p>
         </div>
       </div>
+    <?php endforeach; 
+    else: ?>
+  <div class="col-md-12 mt-3 text-secondary" id="comments">
+    <div class="col-md-12">
+      <p>Комментариев нет</p>
+    </div>
+  </div>
+  <?php endif; ?>
 
     </div><!-- /.blog-main -->
+<?php endif; ?>
 <?php $about = DB::getAboutInfo(); ?>
     <aside class="col-md-4 blog-sidebar">
       <div class="p-4 mb-3 bg-light rounded">
@@ -216,3 +232,4 @@ foreach($nav as $k=>$val):?>
 </footer>
 </body>
 </html>
+

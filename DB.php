@@ -106,7 +106,29 @@ class DB
 		{
 			return false;
 		}
+	}
 
+	public static function newComment(array $data)
+	{
+		$stmt = self::connect()->prepare('INSERT INTO comments(user_id, comment, post_id) VALUES (:user_id, :comment, :post_id)');
+		$stmt->bindParam(':user_id', $data['user_id']);
+		$stmt->bindParam(':comment', $data['comment']);
+		$stmt->bindParam(':post_id', $data['post_id']);
+		if($stmt->execute())
+		{
+			$_SESSION['success'] = "Комментарий успешно сохранен, спасибо за Ваш комментарий!";
+		}
+		else
+		{
+			$_SESSION['msg'] = 'Комментарий не был сохранен, попробуйте позже';
+		}
+	}
+
+	public static function getComments($id)
+	{
+		$stmt = self::connect()->prepare('SELECT c.id, c.comment, c.updated_at, c.status_id, u.user_name, c.post_id FROM comments c LEFT JOIN users u ON c.user_id = u.id WHERE c.post_id = :id ORDER BY c.updated_at DESC');
+		$stmt->execute([':id'=>$id]);
+		return $stmt->fetchAll();
 	}
 
 }

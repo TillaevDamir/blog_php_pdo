@@ -50,7 +50,8 @@
         <?php if(!empty($_SESSION['status'])):?>
         <a class="btn btn-sm btn-outline-secondary" href="logout.php">Выйти</a>
         <?php else: ?>
-        <a class="btn btn-sm btn-outline-secondary" href="register.php">Войти</a>
+        <a class="btn btn-sm btn-outline-secondary mr-1" href="login.php">Вход</a>
+        <a class="btn btn-sm btn-outline-secondary" href="register.php">Регистрация</a>
         <?php endif; ?>
       </div>
     </div>
